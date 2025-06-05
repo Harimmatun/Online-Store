@@ -1,115 +1,54 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Додано useNavigate
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import styled from 'styled-components';
-
-const CartPopupWrapper = styled.div`
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
-`;
-
-const CartButton = styled.div`
-  cursor: pointer;
-  background: #3b82f6;
-  color: #ffffff;
-  padding: 0.8rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  transition: background 0.3s ease;
-
-  &:hover {
-    background: #2563eb;
-  }
-`;
-
-const CartIcon = styled.span`
-  font-size: 1.5rem;
-`;
-
-const CartCount = styled.span`
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background: #ef4444;
-  color: #ffffff;
-  border-radius: 50%;
-  padding: 0 6px;
-  font-size: 0.8rem;
-`;
-
-const CartPopupContent = styled.div<{ isOpen: boolean }>`
-  display: ${props => (props.isOpen ? 'block' : 'none')};
-  position: absolute;
-  bottom: 60px;
-  right: 0;
-  width: 300px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-  color: #1e2a44;
-`;
-
-const CartItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-`;
-
-const ItemTitle = styled.p`
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.9rem;
-`;
-
-const ItemPrice = styled.p`
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.9rem;
-  color: #3b82f6;
-`;
 
 function CartPopup() {
   const { cart } = useCart();
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate(); // Додано useNavigate
-
+  const navigate = useNavigate();
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleCartClick = () => {
-    setIsOpen(false); // Закриваємо при кліку
-    navigate('/cart'); // Перехід на сторінку кошика через react-router
+    setIsOpen(false);
+    navigate('/cart');
   };
 
   return (
-    <CartPopupWrapper>
-      <CartButton
+    <div className="fixed bottom-5 right-5 z-50">
+      <div
+        className="bg-[#3b82f6] text-white p-3 rounded-full flex items-center justify-center relative cursor-pointer hover:bg-[#2563eb] transition-colors"
         onMouseEnter={() => setIsOpen(true)}
         onMouseLeave={() => setIsOpen(false)}
         onClick={handleCartClick}
       >
-        <CartIcon>🛒</CartIcon>
-        {totalItems > 0 && <CartCount>{totalItems}</CartCount>}
-      </CartButton>
-      <CartPopupContent isOpen={isOpen}>
+        <span className="text-xl">🛒</span>
+        {totalItems > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-2 text-xs">
+            {totalItems}
+          </span>
+        )}
+      </div>
+      <div
+        className={`${
+          isOpen ? 'block' : 'hidden'
+        } absolute bottom-16 right-0 w-72 bg-white border border-gray-200 rounded-md shadow-lg p-4 text-[#1e2a44]`}
+      >
         {cart.length === 0 ? (
-          <p>Кошик порожній</p>
+          <p className="font-[Poppins] text-sm">Кошик порожній</p>
         ) : (
           cart.map(item => (
-            <CartItem key={item.id}>
-              <ItemTitle>
+            <div key={item.id} className="flex justify-between mb-2">
+              <p className="font-[Poppins] text-sm">
                 {item.title} (x{item.quantity})
-              </ItemTitle>
-              <ItemPrice>{item.price * item.quantity} грн</ItemPrice>
-            </CartItem>
+              </p>
+              <p className="font-[Poppins] text-sm text-[#3b82f6]">
+                {item.price * item.quantity} грн
+              </p>
+            </div>
           ))
         )}
-      </CartPopupContent>
-    </CartPopupWrapper>
+      </div>
+    </div>
   );
 }
 

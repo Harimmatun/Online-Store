@@ -47,10 +47,6 @@ function App() {
         <CartProvider>
           <Router>
             <div>
-              <div className="bg-primary text-white p-4 text-center font-sans">
-                <h1 className="text-2xl font-bold">Test Tailwind CSS</h1>
-                <p className="mt-2">This is a test to ensure Tailwind CSS is working.</p>
-              </div>
               <Header />
               <Routes>
                 <Route path="/" element={<Catalog />} />

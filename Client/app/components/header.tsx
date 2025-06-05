@@ -1,150 +1,112 @@
 import { useState, useEffect } from 'react';
 import { useSearch } from '../context/SearchContext';
-import { useAuth } from '../context/AuthContext'; // Додано useAuth
+import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-
-const HeaderStyled = styled.header`
-  background: linear-gradient(90deg, #1e2a44, #3b82f6);
-  color: #ffffff;
-  padding: 1rem 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Logo = styled.h1`
-  margin: 0;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.8rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-`;
-
-const Nav = styled.nav`
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-`;
-
-const NavLink = styled(Link)`
-  color: #ffffff;
-  font-family: 'Poppins', sans-serif;
-  font-size: 1rem;
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  transition: background 0.3s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-`;
-
-const AuthButton = styled(Link)`
-  background: #ffffff;
-  color: #1e2a44;
-  font-family: 'Poppins', sans-serif;
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  text-decoration: none;
-  transition: background 0.3s ease;
-
-  &:hover {
-    background: #e5e7eb;
-  }
-`;
-
-const LogoutButton = styled.button`
-  background: #ef4444;
-  color: #ffffff;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  border: none;
-  font-family: 'Poppins', sans-serif;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-
-  &:hover {
-    background: #dc2626;
-  }
-`;
-
-const SearchContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const SearchInput = styled.input`
-  padding: 0.5rem;
-  border: none;
-  border-radius: 4px 0 0 4px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 1rem;
-  outline: none;
-`;
-
-const SearchButton = styled.button`
-  padding: 0.5rem 1rem;
-  border: none;
-  background: #ffffff;
-  color: #1e2a44;
-  border-radius: 0 4px 4px 0;
-  cursor: pointer;
-  font-family: 'Poppins', sans-serif;
-  font-size: 1rem;
-  transition: background 0.3s ease;
-
-  &:hover {
-    background: #e5e7eb;
-  }
-`;
 
 function Header() {
   const { searchQuery, setSearchQuery } = useSearch();
-  const { user, logout } = useAuth(); // Використовуємо useAuth
+  const { user, logout } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Оновлюємо контекст для пошуку
   };
 
   return (
-    <HeaderStyled>
-      <Link to="/">
-        <Logo>Інтернет-магазин</Logo>
-      </Link>
-      <SearchContainer>
-        <form onSubmit={handleSearch}>
-          <SearchInput
+    <header className="bg-gradient-to-r from-[#1e2a44] to-[#3b82f6] text-white px-4 py-4 shadow-md flex flex-col md:flex-row justify-between items-center">
+      <div className="flex w-full justify-between items-center">
+        <Link to="/">
+          <h1 className="text-xl md:text-2xl font-bold font-[Montserrat] uppercase tracking-wide m-0">
+            Інтернет-магазин
+          </h1>
+        </Link>
+        <button
+          className="md:hidden text-white"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
+      <div className="flex items-center w-full md:w-auto mt-4 md:mt-0">
+        <form onSubmit={handleSearch} className="flex w-full md:w-auto">
+          <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Пошук продуктів..."
+            className="px-3 py-2 rounded-l-md border-none font-[Poppins] text-base text-black focus:outline-none focus:ring-2 focus:ring-[#3b82f6] w-full md:w-48"
           />
-          <SearchButton type="submit">Знайти</SearchButton>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-white text-[#1e2a44] rounded-r-md font-[Poppins] text-base hover:bg-gray-200 transition-colors"
+          >
+            Знайти
+          </button>
         </form>
-      </SearchContainer>
-      <Nav>
-        <NavLink to="/">Каталог</NavLink>
-        <NavLink to="/cart">Кошик</NavLink>
+      </div>
+      <nav
+        className={`flex-col md:flex-row md:flex items-center gap-6 mt-4 md:mt-0 ${
+          isMenuOpen ? 'flex' : 'hidden'
+        }`}
+      >
+        <Link
+          to="/"
+          className="text-white font-[Poppins] text-base px-4 py-2 rounded-md hover:bg-white/20 transition-colors"
+        >
+          Каталог
+        </Link>
+        <Link
+          to="/cart"
+          className="text-white font-[Poppins] text-base px-4 py-2 rounded-md hover:bg-white/20 transition-colors"
+        >
+          Кошик
+        </Link>
         {user ? (
           <>
-            <NavLink to="/profile">{user.name}</NavLink>
-            <LogoutButton onClick={logout}>Вийти</LogoutButton>
+            <Link
+              to="/profile"
+              className="text-white font-[Poppins] text-base px-4 py-2 rounded-md hover:bg-white/20 transition-colors"
+            >
+              {user.name}
+            </Link>
+            <button
+              onClick={logout}
+              className="bg-red-500 text-white px-4 py-2 rounded-md font-[Poppins] text-base hover:bg-red-600 transition-colors"
+            >
+              Вийти
+            </button>
           </>
         ) : (
           <>
-            <AuthButton to="/login">Увійти</AuthButton>
-            <AuthButton to="/register">Реєстрація</AuthButton>
+            <Link
+              to="/login"
+              className="bg-white text-[#1e2a44] px-4 py-2 rounded-md font-[Poppins] text-base hover:bg-gray-200 transition-colors"
+            >
+              Увійти
+            </Link>
+            <Link
+              to="/register"
+              className="bg-white text-[#1e2a44] px-4 py-2 rounded-md font-[Poppins] text-base hover:bg-gray-200 transition-colors"
+            >
+              Реєстрація
+            </Link>
           </>
         )}
-      </Nav>
-    </HeaderStyled>
+      </nav>
+    </header>
   );
 }
 
