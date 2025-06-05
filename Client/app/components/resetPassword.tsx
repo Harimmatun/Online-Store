@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { resetPassword, confirmResetPassword } from '../../auth'; // Правильний шлях
+import { resetPassword, confirmResetPassword } from '../auth'; // Правильний шлях
 
 function ResetPassword() {
   const [email, setEmail] = useState('');

@@ -47,16 +47,20 @@ function App() {
         <CartProvider>
           <Router>
             <div>
+              <div className="bg-primary text-white p-4 text-center font-sans">
+                <h1 className="text-2xl font-bold">Test Tailwind CSS</h1>
+                <p className="mt-2">This is a test to ensure Tailwind CSS is working.</p>
+              </div>
               <Header />
               <Routes>
                 <Route path="/" element={<Catalog />} />
                 <Route path="/product/:id" element={<ProductPage products={products} />} />
                 <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Cart />} /> {/* Тимчасово, поки Checkout не реалізовано */}
+                <Route path="/checkout" element={<Cart />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/reset-password-confirm" element={<ResetPassword />} /> {/* Додано */}
+                <Route path="/reset-password-confirm" element={<ResetPassword />} />
                 <Route path="/compare" element={<Compare />} />
                 <Route element={<ProtectedRoute />}>
                   <Route path="/profile" element={<Profile />} />
