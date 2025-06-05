@@ -1,10 +1,21 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
+// Інтерфейс для адреси
+interface Address {
+  city: string;
+  street: string;
+  house: string;
+  isDefault: boolean;
+}
+
 // Інтерфейс для користувача
 interface User {
   name: string;
   email: string;
   token: string;
+  phone?: string;
+  avatar?: string;
+  address?: Address;
 }
 
 // Інтерфейс для контексту авторизації
@@ -51,7 +62,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     const data = await response.json();
-    setUser({ name: data.name, email: data.email, token: data.token });
+    setUser({
+      name: data.name,
+      email: data.email,
+      token: data.token,
+      phone: data.phone || undefined,
+      avatar: data.avatar || undefined,
+      address: data.address || undefined,
+    });
   };
 
   const register = async (name: string, email: string, password: string) => {
@@ -69,7 +87,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     const data = await response.json();
-    setUser({ name: data.name, email: data.email, token: data.token });
+    setUser({
+      name: data.name,
+      email: data.email,
+      token: data.token,
+      phone: data.phone || undefined,
+      avatar: data.avatar || undefined,
+      address: data.address || undefined,
+    });
   };
 
   const logout = () => {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { resetPassword, confirmResetPassword } from '../auth'; // Правильний шлях
+import { resetPassword, confirmResetPassword } from '../auth';
 
 function ResetPassword() {
   const [email, setEmail] = useState('');
@@ -47,45 +47,77 @@ function ResetPassword() {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', textAlign: 'center' }}>
-      <h2>Скидання пароля</h2>
-      {token ? (
-        <form onSubmit={handleConfirmReset}>
-          <div>
-            <label htmlFor="newPassword">Новий пароль:</label>
-            <input
-              type="password"
-              id="newPassword"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              style={{ width: '100%', padding: '8px', margin: '10px 0' }}
-              required
-            />
-          </div>
-          <button type="submit" style={{ padding: '10px 20px', backgroundColor: '#4CAF50', color: 'white', border: 'none', cursor: 'pointer' }}>
-            Скинути пароль
-          </button>
-          {message && <p style={{ color: message.includes('Помилка') ? 'red' : 'green' }}>{message}</p>}
-        </form>
-      ) : (
-        <form onSubmit={handleResetRequest}>
-          <div>
-            <label htmlFor="email">Електронна пошта:</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={{ width: '100%', padding: '8px', margin: '10px 0' }}
-              required
-            />
-          </div>
-          <button type="submit" style={{ padding: '10px 20px', backgroundColor: '#4CAF50', color: 'white', border: 'none', cursor: 'pointer' }}>
-            Надіслати запит на скидання
-          </button>
-          {message && <p style={{ color: message.includes('Помилка') ? 'red' : 'green' }}>{message}</p>}
-        </form>
-      )}
+    <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gradient-to-b from-gray-50 to-white min-h-screen flex items-center">
+      <div className="bg-white p-8 rounded-xl shadow-2xl w-full animate-fadeIn">
+        <h2 className="text-3xl font-bold font-[Montserrat] text-[#1e2a44] text-center mb-8">
+          Скидання пароля
+        </h2>
+        {token ? (
+          <form onSubmit={handleConfirmReset} className="flex flex-col gap-4">
+            <div className="relative">
+              <label htmlFor="newPassword" className="font-[Poppins] text-sm text-[#1e2a44] mb-1 block">
+                Новий пароль
+              </label>
+              <input
+                type="password"
+                id="newPassword"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+                className="w-full px-4 py-3 rounded-md border border-gray-200 font-[Poppins] text-base focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition-all duration-300 placeholder-gray-400"
+                placeholder="Введіть новий пароль"
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-gradient-to-r from-[#10b981] to-[#059669] text-white px-6 py-3 rounded-lg font-[Poppins] text-base font-semibold hover:scale-105 transition-all duration-300 shadow-md"
+            >
+              Скинути пароль
+            </button>
+            {message && (
+              <p
+                className={`font-[Poppins] text-sm text-center animate-fadeIn ${
+                  message.includes('Помилка') ? 'text-red-500' : 'text-[#10b981]'
+                }`}
+              >
+                {message}
+              </p>
+            )}
+          </form>
+        ) : (
+          <form onSubmit={handleResetRequest} className="flex flex-col gap-4">
+            <div className="relative">
+              <label htmlFor="email" className="font-[Poppins] text-sm text-[#1e2a44] mb-1 block">
+                Електронна пошта
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-3 rounded-md border border-gray-200 font-[Poppins] text-base focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition-all duration-300 placeholder-gray-400"
+                placeholder="Введіть вашу пошту"
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-gradient-to-r from-[#3b82f6] to-[#2563eb] text-white px-6 py-3 rounded-lg font-[Poppins] text-base font-semibold hover:scale-105 transition-all duration-300 shadow-md"
+            >
+              Надіслати запит на скидання
+            </button>
+            {message && (
+              <p
+                className={`font-[Poppins] text-sm text-center animate-fadeIn ${
+                  message.includes('Помилка') ? 'text-red-500' : 'text-[#10b981]'
+                }`}
+              >
+                {message}
+              </p>
+            )}
+          </form>
+        )}
+      </div>
     </div>
   );
 }

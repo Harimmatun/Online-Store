@@ -1,58 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import styled from 'styled-components';
-
-const RegisterWrapper = styled.div`
-  padding: 2rem;
-  max-width: 400px;
-  margin: 0 auto;
-`;
-
-const RegisterTitle = styled.h2`
-  font-family: 'Montserrat', sans-serif;
-  font-size: 2rem;
-  color: #1e2a44;
-  text-align: center;
-  margin-bottom: 2rem;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-`;
-
-const Input = styled.input`
-  padding: 0.5rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 4px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 1rem;
-`;
-
-const SubmitButton = styled.button`
-  background: #3b82f6;
-  color: #ffffff;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  border: none;
-  font-family: 'Poppins', sans-serif;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-
-  &:hover {
-    background: #2563eb;
-  }
-`;
-
-const ErrorMessage = styled.p`
-  color: #ef4444;
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.9rem;
-  text-align: center;
-`;
 
 function Register() {
   const [name, setName] = useState('');
@@ -67,41 +15,75 @@ function Register() {
     setError(null);
     try {
       await register(name, email, password);
-      navigate('/'); // Перенаправлення на головну сторінку після успішної реєстрації
+      navigate('/');
     } catch (err: any) {
       setError(err.message);
     }
   };
 
   return (
-    <RegisterWrapper>
-      <RegisterTitle>Реєстрація</RegisterTitle>
-      <Form onSubmit={handleSubmit}>
-        <Input
-          type="text"
-          placeholder="Ім'я"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <Input
-          type="email"
-          placeholder="Електронна пошта"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <Input
-          type="password"
-          placeholder="Пароль"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <SubmitButton type="submit">Зареєструватися</SubmitButton>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-      </Form>
-    </RegisterWrapper>
+    <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gradient-to-b from-gray-50 to-white min-h-screen flex items-center">
+      <div className="bg-white p-8 rounded-xl shadow-2xl w-full animate-fadeIn">
+        <h2 className="text-3xl font-bold font-[Montserrat] text-[#1e2a44] text-center mb-8">
+          Реєстрація
+        </h2>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="relative">
+            <label htmlFor="name" className="font-[Poppins] text-sm text-[#1e2a44] mb-1 block">
+              Ім’я
+            </label>
+            <input
+              type="text"
+              id="name"
+              placeholder="Введіть ім’я"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="w-full px-4 py-3 rounded-md border border-gray-200 font-[Poppins] text-base focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition-all duration-300 placeholder-gray-400"
+            />
+          </div>
+          <div className="relative">
+            <label htmlFor="email" className="font-[Poppins] text-sm text-[#1e2a44] mb-1 block">
+              Електронна пошта
+            </label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Введіть пошту"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 py-3 rounded-md border border-gray-200 font-[Poppins] text-base focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition-all duration-300 placeholder-gray-400"
+            />
+          </div>
+          <div className="relative">
+            <label htmlFor="password" className="font-[Poppins] text-sm text-[#1e2a44] mb-1 block">
+              Пароль
+            </label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Введіть пароль"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-4 py-3 rounded-md border border-gray-200 font-[Poppins] text-base focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition-all duration-300 placeholder-gray-400"
+            />
+          </div>
+          <button
+            type="submit"
+            className="bg-gradient-to-r from-[#3b82f6] to-[#2563eb] text-white px-6 py-3 rounded-lg font-[Poppins] text-base font-semibold hover:scale-105 transition-all duration-300 shadow-md"
+          >
+            Зареєструватися
+          </button>
+          {error && (
+            <p className="text-red-500 font-[Poppins] text-sm text-center animate-fadeIn">
+              {error}
+            </p>
+          )}
+        </form>
+      </div>
+    </div>
   );
 }
 
