@@ -1,0 +1,214 @@
+{
+  "items": [
+    {
+      "sys": { "id": "1" },
+      "fields": {
+        "title": "Смартфон",
+        "price": 9999,
+        "category": "Смартфони",
+        "description": "Сучасний смартфон із 6.5-дюймовим дисплеєм, камерою 48 Мп та батареєю 5000 мАг.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "2" },
+      "fields": {
+        "title": "Ноутбук",
+        "price": 22999,
+        "category": "Ноутбуки",
+        "description": "Потужний ноутбук із процесором i7, 16 ГБ ОЗУ та SSD на 512 ГБ.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "3" },
+      "fields": {
+        "title": "Планшет",
+        "price": 7999,
+        "category": "Планшети",
+        "description": "Планшет із 10-дюймовим екраном, 4 ГБ ОЗУ та підтримкою стилуса.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "4" },
+      "fields": {
+        "title": "Навушники",
+        "price": 1499,
+        "category": "Аксесуари",
+        "description": "Якісні навушники з мікрофоном та шумозаглушенням.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "5" },
+      "fields": {
+        "title": "Смарт-годинник",
+        "price": 3999,
+        "category": "Смарт-годинники",
+        "description": "Смарт-годинник із функцією вимірювання пульсу та водонепроникним корпусом.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "6" },
+      "fields": {
+        "title": "Телевізор",
+        "price": 17999,
+        "category": "Телевізори",
+        "description": "Телевізор 43 дюйми з роздільною здатністю 4K та Smart TV.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "7" },
+      "fields": {
+        "title": "Клавіатура",
+        "price": 999,
+        "category": "Аксесуари",
+        "description": "Ергономічна клавіатура з підсвіткою клавіш.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "8" },
+      "fields": {
+        "title": "Миша",
+        "price": 599,
+        "category": "Аксесуари",
+        "description": "Оптична миша з високою чутливістю DPI.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "9" },
+      "fields": {
+        "title": "Монітор",
+        "price": 5499,
+        "category": "Монітори",
+        "description": "Монітор 27 дюймів із Full HD роздільною здатністю.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "10" },
+      "fields": {
+        "title": "Принтер",
+        "price": 3499,
+        "category": "Принтери",
+        "description": "Багатофункціональний принтер із підтримкою Wi-Fi.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "11" },
+      "fields": {
+        "title": "Веб-камера",
+        "price": 1299,
+        "category": "Аксесуари",
+        "description": "Веб-камера з роздільною здатністю 1080p та вбудованим мікрофоном.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "12" },
+      "fields": {
+        "title": "Зовнішній жорсткий диск",
+        "price": 1999,
+        "category": "Носії інформації",
+        "description": "Зовнішній жорсткий диск на 1 ТБ із швидким USB 3.0.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "13" },
+      "fields": {
+        "title": "Флешка 64GB",
+        "price": 499,
+        "category": "Носії інформації",
+        "description": "Флешка на 64 ГБ із швидкістю передачі даних USB 3.0.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "14" },
+      "fields": {
+        "title": "Гарнітура",
+        "price": 1899,
+        "category": "Аксесуари",
+        "description": "Гарнітура з шумозаглушенням та якісним звуком.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "15" },
+      "fields": {
+        "title": "Мікрофон",
+        "price": 1599,
+        "category": "Аксесуари",
+        "description": "Конденсаторний мікрофон для стрімінгу та запису.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "16" },
+      "fields": {
+        "title": "Роутер",
+        "price": 1299,
+        "category": "Мережеве обладнання",
+        "description": "Wi-Fi роутер із підтримкою швидкості до 1200 Мбіт/с.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "17" },
+      "fields": {
+        "title": "Смарт-колонка",
+        "price": 2499,
+        "category": "Смарт-пристрої",
+        "description": "Смарт-колонка з голосовим помічником та підтримкою Bluetooth.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "18" },
+      "fields": {
+        "title": "Ігрова миша",
+        "price": 999,
+        "category": "Аксесуари",
+        "description": "Ігрова миша з RGB-підсвіткою та регульованим DPI.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "19" },
+      "fields": {
+        "title": "Ігрова клавіатура",
+        "price": 1999,
+        "category": "Аксесуари",
+        "description": "Механічна ігрова клавіатура з RGB-підсвіткою.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "20" },
+      "fields": {
+        "title": "Бездротові навушники",
+        "price": 2999,
+        "category": "Аксесуари",
+        "description": "Бездротові навушники з автономністю до 20 годин.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    },
+    {
+      "sys": { "id": "21" },
+      "fields": {
+        "title": "Портативний зарядний пристрій",
+        "price": 799,
+        "category": "Аксесуари",
+        "description": "Портативний зарядний пристрій ємністю 10000 мАг.",
+        "image": { "fields": { "file": { "url": "https://via.placeholder.com/150" } } }
+      }
+    }
+  ]
+}
