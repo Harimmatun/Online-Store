@@ -105,7 +105,7 @@ function Catalog() {
                 Детальніше
               </Link>
               <button
-                onClick={() => addToCart({ id: product.id, title: product.title, price: product.price })}
+                onClick={() => addToCart({ id: product.id, name: product.title, price: product.price, image: '' })}
                 className="bg-[#10b981] text-white px-4 py-2 rounded-md font-[Poppins] text-sm hover:bg-[#059669] transition-colors"
               >
                 Додати до кошика

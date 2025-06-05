@@ -62,7 +62,7 @@ function ProductPage({ products }: ProductPageProps) {
           {product.description || 'Опис продукту буде додано пізніше'}
         </p>
         <button
-          onClick={() => addToCart({ id: product.id, title: product.title, price: product.price })}
+          onClick={() => addToCart({ id: product.id, name: product.title, price: product.price, image: product.image || '' })}
           className="bg-gradient-to-r from-[#10b981] to-[#059669] text-white px-6 py-3 rounded-md font-[Poppins] text-base font-semibold hover:scale-105 transition-all duration-300 shadow-md"
         >
           Додати до кошика
