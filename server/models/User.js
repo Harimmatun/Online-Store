@@ -4,14 +4,7 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  phone: { type: String },
-  language: { type: String, default: 'uk' },
-  avatar: { type: String },
-  token: { type: String }, // Для JWT
-  resetToken: { type: String }, // Для скидання пароля
-  resetPasswordExpires: { type: Date } // Термін дії токена скидання
+  avatar: { type: String, default: '' }
 });
 
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);

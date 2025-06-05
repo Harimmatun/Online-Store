@@ -53,6 +53,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// Статична папка для завантажених файлів
+app.use('/uploads', express.static('uploads'));
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
