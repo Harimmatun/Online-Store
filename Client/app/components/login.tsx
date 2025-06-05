@@ -32,8 +32,12 @@ function Login() {
         </h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="relative">
+            <label htmlFor="email" className="font-[Poppins] text-sm text-[#1e2a44] mb-1 block">
+              Електронна пошта
+            </label>
             <input
               type="email"
+              id="email"
               placeholder="Електронна пошта"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -42,8 +46,12 @@ function Login() {
             />
           </div>
           <div className="relative">
+            <label htmlFor="password" className="font-[Poppins] text-sm text-[#1e2a44] mb-1 block">
+              Пароль
+            </label>
             <input
               type="password"
+              id="password"
               placeholder="Пароль"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

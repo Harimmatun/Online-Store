@@ -44,7 +44,6 @@ function Profile() {
     setError(null);
     if (!user) return;
 
-    // Валідація телефону (простий приклад: +380 і 9 цифр)
     const phoneRegex = /^\+380\d{9}$/;
     if (phone && !phoneRegex.test(phone)) {
       setError('Номер телефону має бути у форматі +380XXXXXXXXX');

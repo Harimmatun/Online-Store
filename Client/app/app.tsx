@@ -52,11 +52,10 @@ function App() {
                 <Route path="/" element={<Catalog />} />
                 <Route path="/product/:id" element={<ProductPage products={products} />} />
                 <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/reset-password-confirm" element={<ResetPassword />} />
                 <Route path="/compare" element={<Compare />} />
                 <Route element={<ProtectedRoute />}>
                   <Route path="/profile" element={<Profile />} />

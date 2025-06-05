@@ -1,65 +1,88 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
 
-// Інтерфейс для продукту в кошику
 interface CartItem {
   id: string;
-  title: string;
+  name: string;
   price: number;
   quantity: number;
+  image: string;
 }
 
-// Інтерфейс для контексту кошика
 interface CartContextType {
-  cart: CartItem[];
-  addToCart: (product: { id: string; title: string; price: number }) => void;
+  cartItems: CartItem[];
+  addToCart: (item: CartItem) => void;
   removeFromCart: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
 }
 
-const CartContext = createContext<CartContextType>({
-  cart: [],
-  addToCart: () => {},
-  removeFromCart: () => {},
-  clearCart: () => {},
-});
+const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  // Ініціалізація стану кошика з localStorage
-  const [cart, setCart] = useState<CartItem[]>(() => {
-    const savedCart = localStorage.getItem('cart');
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
+export function CartProvider({ children }: { children: ReactNode }) {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  // Збереження кошика в localStorage при кожній зміні
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }, [cart]);
-
-  const addToCart = (product: { id: string; title: string; price: number }) => {
-    setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.id === product.id);
+  const addToCart = (item: CartItem) => {
+    console.log('Adding item to cart:', item);
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find((i) => i.id === item.id);
       if (existingItem) {
-        return prevCart.map(item =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        const newItems = prevItems.map((i) =>
+          i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i
         );
+        console.log('Updated existing item, new cart:', newItems);
+        return newItems;
       }
-      return [...prevCart, { ...product, quantity: 1 }];
+      const newItems = [...prevItems, item];
+      console.log('Added new item, new cart:', newItems);
+      return newItems;
     });
   };
 
   const removeFromCart = (id: string) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== id));
+    console.log('Removing item with id:', id);
+    setCartItems((prevItems) => {
+      const newItems = prevItems.filter((item) => item.id !== id);
+      console.log('New cart after removal:', newItems);
+      return newItems;
+    });
+  };
+
+  const updateQuantity = (id: string, quantity: number) => {
+    console.log('Updating quantity for id:', id, 'to:', quantity);
+    if (quantity < 1) {
+      removeFromCart(id);
+      return;
+    }
+    setCartItems((prevItems) => {
+      const newItems = prevItems.map((item) =>
+        item.id === id ? { ...item, quantity: quantity } : item
+      );
+      console.log('New cart after quantity update:', newItems);
+      return newItems;
+    });
   };
 
   const clearCart = () => {
-    setCart([]);
+    console.log('Clearing cart');
+    setCartItems([]);
   };
 
+  console.log('Current cart items in provider:', cartItems);
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider
+      value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart }}
+    >
       {children}
     </CartContext.Provider>
   );
-};
+}
 
-export const useCart = () => useContext(CartContext);
+export function useCart() {
+  const context = useContext(CartContext);
+  if (context === undefined) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+}

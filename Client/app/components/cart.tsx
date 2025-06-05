@@ -1,91 +1,104 @@
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
 
 function Cart() {
-  const { cart, removeFromCart, clearCart } = useCart();
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { cartItems, removeFromCart, updateQuantity } = useCart();
 
-  if (cart.length === 0) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gray-50 min-h-screen">
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <svg
-            className="w-8 h-8 text-[#1e2a44]"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-            />
-          </svg>
-          <h2 className="text-2xl sm:text-3xl font-bold font-[Montserrat] text-[#1e2a44]">
-            Кошик
-          </h2>
-        </div>
-        <p className="text-center font-[Poppins] text-lg text-[#1e2a44] animate-fadeIn">
-          Ваш кошик порожній
-        </p>
-      </div>
-    );
-  }
+  console.log('Cart: cartItems:', cartItems);
+
+  const total = cartItems.reduce((sum: number, item: CartItem) => sum + item.price * item.quantity, 0);
+
+  const handleRemove = (id: string) => {
+    removeFromCart(id);
+  };
+
+  const handleQuantityChange = (id: string, quantity: number) => {
+    if (quantity < 1) return;
+    updateQuantity(id, quantity);
+  };
+
+  const handleCheckout = () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    if (cartItems.length === 0) {
+      alert('Кошик порожній!');
+      return;
+    }
+    navigate('/checkout');
+  };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gray-50 min-h-screen">
-      <div className="flex items-center justify-center gap-3 mb-8">
-        <svg
-          className="w-8 h-8 text-[#1e2a44]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-          />
-        </svg>
-        <h2 className="text-2xl sm:text-3xl font-bold font-[Montserrat] text-[#1e2a44]">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gradient-to-b from-gray-50 to-white min-h-screen">
+      <div className="bg-white p-8 rounded-xl shadow-2xl animate-fadeIn">
+        <h2 className="text-3xl font-bold font-[Montserrat] text-[#1e2a44] text-center mb-8">
           Кошик
         </h2>
-      </div>
-      <div className="space-y-4">
-        {cart.map((item, index) => (
-          <div
-            key={item.id}
-            className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 animate-fadeIn"
-            style={{ animationDelay: `${index * 100}ms` }}
-          >
-            <p className="font-[Poppins] text-base sm:text-lg text-[#1e2a44] mb-2 sm:mb-0">
-              {item.title} <span className="text-gray-500">(x{item.quantity})</span>
-            </p>
-            <div className="flex items-center gap-4 w-full sm:w-auto">
-              <p className="font-[Poppins] text-base sm:text-lg text-[#3b82f6] flex-1 sm:flex-none">
-                {item.price * item.quantity} грн
+        {cartItems.length === 0 ? (
+          <p className="text-center font-[Poppins] text-lg text-[#1e2a44] animate-fadeIn">
+            Кошик порожній.
+          </p>
+        ) : (
+          <>
+            <ul className="space-y-4">
+              {cartItems.map((item: CartItem) => (
+                <li key={item.id} className="flex items-center gap-4 border-b pb-4">
+                  <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-md" />
+                  <div className="flex-1">
+                    <h3 className="font-[Poppins] text-lg text-[#1e2a44]">{item.name}</h3>
+                    <p className="font-[Poppins] text-sm text-gray-500">
+                      {item.price} грн x {item.quantity} = {item.price * item.quantity} грн
+                    </p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <button
+                        onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                        className="bg-gray-200 px-2 py-1 rounded-md font-[Poppins] text-sm"
+                      >
+                        -
+                      </button>
+                      <span className="font-[Poppins] text-sm">{item.quantity}</span>
+                      <button
+                        onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                        className="bg-gray-200 px-2 py-1 rounded-md font-[Poppins] text-sm"
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={() => handleRemove(item.id)}
+                        className="bg-red-500 text-white px-3 py-1 rounded-md font-[Poppins] text-sm ml-4"
+                      >
+                        Видалити
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-6">
+              <p className="font-[Poppins] text-lg text-[#1e2a44] text-right">
+                Загальна сума: {total} грн
               </p>
               <button
-                onClick={() => removeFromCart(item.id)}
-                className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-md font-[Poppins] text-sm hover:from-red-600 hover:to-red-700 transition-all duration-300"
+                onClick={handleCheckout}
+                className="bg-gradient-to-r from-[#3b82f6] to-[#2563eb] text-white px-6 py-3 rounded-lg font-[Poppins] text-base font-semibold hover:scale-105 transition-all duration-300 shadow-md mt-4 w-full"
               >
-                Видалити
+                Оформити замовлення
               </button>
             </div>
-          </div>
-        ))}
-      </div>
-      <div className="mt-8 bg-white p-6 rounded-lg shadow-sm text-right animate-fadeIn">
-        <p className="font-[Poppins] text-xl font-semibold text-[#1e2a44] mb-4">
-          Загальна сума: {total} грн
-        </p>
-        <button
-          onClick={clearCart}
-          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-md font-[Poppins] text-sm hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
-        >
-          Очистити кошик
-        </button>
+          </>
+        )}
       </div>
     </div>
   );

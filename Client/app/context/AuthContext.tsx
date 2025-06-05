@@ -9,8 +9,10 @@ interface Address {
 }
 
 // Інтерфейс для користувача
-interface User {
-  name: string;
+export interface User {
+  id: string;
+  firstName: string;
+  lastName?: string;
   email: string;
   token: string;
   phone?: string;
@@ -22,7 +24,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  register: (firstName: string, lastName: string | undefined, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -48,53 +50,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [user]);
 
   const login = async (email: string, password: string) => {
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Помилка входу');
+    // Мок-відповідь для тестування
+    if (email && password) {
+      const mockUser = {
+        id: '123',
+        firstName: 'Test',
+        lastName: 'User',
+        email: email,
+        token: 'mock-token-123',
+        phone: undefined,
+        avatar: undefined,
+        address: undefined,
+      };
+      setUser(mockUser);
+      return;
     }
-
-    const data = await response.json();
-    setUser({
-      name: data.name,
-      email: data.email,
-      token: data.token,
-      phone: data.phone || undefined,
-      avatar: data.avatar || undefined,
-      address: data.address || undefined,
-    });
+    throw new Error('Помилка входу: невірний email або пароль');
   };
 
-  const register = async (name: string, email: string, password: string) => {
-    const response = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name, email, password }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Помилка реєстрації');
+  const register = async (firstName: string, lastName: string | undefined, email: string, password: string) => {
+    // Мок-відповідь для тестування
+    if (firstName && email && password) {
+      const mockUser = {
+        id: '124',
+        firstName: firstName,
+        lastName: lastName || undefined,
+        email: email,
+        token: 'mock-token-124',
+        phone: undefined,
+        avatar: undefined,
+        address: undefined,
+      };
+      setUser(mockUser);
+      return;
     }
-
-    const data = await response.json();
-    setUser({
-      name: data.name,
-      email: data.email,
-      token: data.token,
-      phone: data.phone || undefined,
-      avatar: data.avatar || undefined,
-      address: data.address || undefined,
-    });
+    throw new Error('Помилка реєстрації: заповніть усі поля');
   };
 
   const logout = () => {

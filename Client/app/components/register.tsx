@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 function Register() {
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -14,7 +15,7 @@ function Register() {
     e.preventDefault();
     setError(null);
     try {
-      await register(name, email, password);
+      await register(firstName, lastName || undefined, email, password);
       navigate('/');
     } catch (err: any) {
       setError(err.message);
@@ -29,16 +30,29 @@ function Register() {
         </h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="relative">
-            <label htmlFor="name" className="font-[Poppins] text-sm text-[#1e2a44] mb-1 block">
+            <label htmlFor="firstName" className="font-[Poppins] text-sm text-[#1e2a44] mb-1 block">
               Ім’я
             </label>
             <input
               type="text"
-              id="name"
+              id="firstName"
               placeholder="Введіть ім’я"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
               required
+              className="w-full px-4 py-3 rounded-md border border-gray-200 font-[Poppins] text-base focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition-all duration-300 placeholder-gray-400"
+            />
+          </div>
+          <div className="relative">
+            <label htmlFor="lastName" className="font-[Poppins] text-sm text-[#1e2a44] mb-1 block">
+              Прізвище (опціонально)
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              placeholder="Введіть прізвище"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
               className="w-full px-4 py-3 rounded-md border border-gray-200 font-[Poppins] text-base focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition-all duration-300 placeholder-gray-400"
             />
           </div>
