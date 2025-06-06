@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Order = require('../models/Order');
 const nodemailer = require('nodemailer');
 
 // Перевірка наявності змінних із .env
@@ -36,10 +37,9 @@ const transporter = nodemailer.createTransport({
     user: EMAIL_USER,
     pass: EMAIL_PASS,
   },
-  family: 4, // Використовуємо IPv4
+  family: 4,
 });
 
-// Перевірка підключення до email
 transporter.verify((error, success) => {
   if (error) {
     console.error('Email transporter error:', error);
@@ -70,7 +70,7 @@ router.post('/register', async (req, res) => {
 
     await user.save();
 
-    res.status(201).json({ user: { name, email }, token });
+    res.status(201).json({ user: { name, email, token } });
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({ message: 'Помилка сервера під час реєстрації' });
@@ -96,7 +96,7 @@ router.post('/login', async (req, res) => {
     user.token = token;
     await user.save();
 
-    res.json({ user: { name: user.name, email: user.email }, token });
+    res.json({ user: { name: user.name, email: user.email, phone: user.phone, avatar: user.avatar, address: user.address, token } });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Помилка сервера під час входу' });
@@ -115,7 +115,7 @@ router.post('/reset-password', async (req, res) => {
 
     const resetToken = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h' });
     user.resetToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 година
+    user.resetPasswordExpires = Date.now() + 3600000;
     await user.save();
 
     const resetLink = `http://localhost:5173/reset-password-confirm?token=${resetToken}`;
@@ -143,7 +143,7 @@ router.post('/reset-password-confirm', async (req, res) => {
     const user = await User.findOne({
       email: decoded.email,
       resetToken: token,
-      resetPasswordExpires: { $gt: Date.now() }
+      resetPasswordExpires: { $gt: Date.now() },
     });
 
     if (!user) {
@@ -169,7 +169,7 @@ router.post('/reset-password-confirm', async (req, res) => {
 
 // Оновлення профілю
 router.put('/profile', async (req, res) => {
-  const { name, phone, language, currentPassword, newPassword } = req.body;
+  const { name, phone, language, currentPassword, newPassword, avatar, address } = req.body;
   const token = req.headers.authorization?.split(' ')[1];
 
   if (!token) {
@@ -187,6 +187,8 @@ router.put('/profile', async (req, res) => {
     user.name = name || user.name;
     user.phone = phone || user.phone;
     user.language = language || user.language;
+    user.avatar = avatar || user.avatar;
+    user.address = address || user.address;
 
     if (currentPassword && newPassword) {
       const isMatch = await bcrypt.compare(currentPassword, user.password);
@@ -198,7 +200,17 @@ router.put('/profile', async (req, res) => {
 
     await user.save();
 
-    res.json({ user: { name: user.name, email: user.email, phone: user.phone, language: user.language }, token: user.token });
+    res.json({
+      user: {
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        avatar: user.avatar,
+        address: user.address,
+        language: user.language,
+        token: user.token,
+      },
+    });
   } catch (error) {
     console.error('Profile update error:', error);
     if (error.name === 'JsonWebTokenError') {
@@ -209,9 +221,9 @@ router.put('/profile', async (req, res) => {
   }
 });
 
-// Завантаження аватара
-router.post('/avatar', async (req, res) => {
-  const { avatar } = req.body;
+// Створення замовлення
+router.post('/order', async (req, res) => {
+  const { items, total, address } = req.body;
   const token = req.headers.authorization?.split(' ')[1];
 
   if (!token) {
@@ -226,17 +238,19 @@ router.post('/avatar', async (req, res) => {
       return res.status(401).json({ message: 'Невалідний токен' });
     }
 
-    user.avatar = avatar || user.avatar;
-    await user.save();
+    const order = new Order({
+      userId: user._id,
+      items,
+      total,
+      address,
+    });
 
-    res.json({ avatar: user.avatar, token: user.token });
+    await order.save();
+
+    res.status(201).json({ message: 'Замовлення успішно створено', order });
   } catch (error) {
-    console.error('Avatar upload error:', error);
-    if (error.name === 'JsonWebTokenError') {
-      res.status(401).json({ message: 'Невалідний токен' });
-    } else {
-      res.status(500).json({ message: 'Помилка сервера під час завантаження аватара' });
-    }
+    console.error('Order creation error:', error);
+    res.status(500).json({ message: 'Помилка сервера під час створення замовлення', error: error.message });
   }
 });
 

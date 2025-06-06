@@ -1,88 +1,105 @@
-import React, { createContext, useContext, useState } from 'react';
-import type { ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
-interface CartItem {
-  id: string;
+export interface CartItem {
+  id: number;
   name: string;
   price: number;
-  quantity: number;
   image: string;
+  quantity: number;
 }
 
 interface CartContextType {
-  cartItems: CartItem[];
-  addToCart: (item: Omit<CartItem, 'quantity'>) => void;
-  removeFromCart: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
-  clearCart: () => void;
+  cart: CartItem[];
+  addToCart: (item: CartItem) => void;
+  removeFromCart: (id: number) => void;
+  checkout: () => Promise<void>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export function CartProvider({ children }: { children: ReactNode }) {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+export const CartProvider = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAuth();
+  const [cart, setCart] = useState<CartItem[]>([]);
 
-  const addToCart = (item: Omit<CartItem, 'quantity'>) => {
-    console.log('Adding item to cart:', item);
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find((i) => i.id === item.id);
-      if (existingItem) {
-        const newItems = prevItems.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-        );
-        console.log('Updated existing item, new cart:', newItems);
-        return newItems;
-      }
-      const newItems = [...prevItems, { ...item, quantity: 1 }];
-      console.log('Added new item, new cart:', newItems);
-      return newItems;
-    });
-  };
-
-  const removeFromCart = (id: string) => {
-    console.log('Removing item with id:', id);
-    setCartItems((prevItems) => {
-      const newItems = prevItems.filter((item) => item.id !== id);
-      console.log('New cart after removal:', newItems);
-      return newItems;
-    });
-  };
-
-  const updateQuantity = (id: string, quantity: number) => {
-    console.log('Updating quantity for id:', id, 'to:', quantity);
-    if (quantity < 1) {
-      removeFromCart(id);
-      return;
+  useEffect(() => {
+    const storedCart = localStorage.getItem('cart');
+    if (storedCart) {
+      setCart(JSON.parse(storedCart));
     }
-    setCartItems((prevItems) => {
-      const newItems = prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: quantity } : item
-      );
-      console.log('New cart after quantity update:', newItems);
-      return newItems;
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
+
+  const addToCart = (item: CartItem) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
+      if (existingItem) {
+        return prevCart.map((cartItem) =>
+          cartItem.id === item.id
+            ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
+            : cartItem
+        );
+      }
+      return [...prevCart, item];
     });
   };
 
-  const clearCart = () => {
-    console.log('Clearing cart');
-    setCartItems([]);
+  const removeFromCart = (id: number) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
-  console.log('Current cart items in provider:', cartItems);
+  const checkout = async () => {
+    if (!user || !user.token) {
+      throw new Error('Користувач не авторизований');
+    }
+
+    if (!cart.length) {
+      throw new Error('Кошик порожній');
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({
+          items: cart,
+          total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+          address: user.address,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to create order: ${response.status} - ${errorText}`);
+      }
+
+      setCart([]);
+      localStorage.setItem('cart', JSON.stringify([]));
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(error.message || 'Помилка при створенні замовлення');
+      }
+      throw new Error('Помилка при створенні замовлення');
+    }
+  };
 
   return (
-    <CartContext.Provider
-      value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart }}
-    >
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, checkout }}>
       {children}
     </CartContext.Provider>
   );
-}
+};
 
-export function useCart() {
+export const useCart = () => {
   const context = useContext(CartContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useCart must be used within a CartProvider');
   }
   return context;
-}
+};

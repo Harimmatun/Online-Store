@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { useSearch } from '../context/SearchContext';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 
 function Header() {
   const { searchQuery, setSearchQuery } = useSearch();
   const { user, logout } = useAuth();
+  const { cart } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -70,18 +72,36 @@ function Header() {
         </Link>
         <Link
           to="/cart"
-          className="text-white font-[Poppins] text-base px-4 py-2 rounded-md hover:bg-white/20 transition-colors"
+          className="text-white font-[Poppins] text-base px-4 py-2 rounded-md hover:bg-white/20 transition-colors relative"
         >
           Кошик
+          {cart.length > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              {cart.length}
+            </span>
+          )}
         </Link>
         {user ? (
           <>
-            <Link
-              to="/profile"
-              className="text-white font-[Poppins] text-base px-4 py-2 rounded-md hover:bg-white/20 transition-colors"
-            >
-              {user.name}
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                to="/profile"
+                className="text-white font-[Poppins] text-base px-4 py-2 rounded-md hover:bg-white/20 transition-colors flex items-center gap-2"
+              >
+                {user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt="Avatar"
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center">
+                    <span className="text-white">{user.name.charAt(0)}</span>
+                  </div>
+                )}
+                {user.name}
+              </Link>
+            </div>
             <button
               onClick={logout}
               className="bg-red-500 text-white px-4 py-2 rounded-md font-[Poppins] text-base hover:bg-red-600 transition-colors"

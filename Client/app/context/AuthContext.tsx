@@ -10,22 +10,23 @@ interface Address {
 
 // Інтерфейс для користувача
 export interface User {
-  id: string;
-  firstName: string;
-  lastName?: string;
+  id?: string;
+  name: string;
   email: string;
   token: string;
   phone?: string;
   avatar?: string;
   address?: Address;
+  language?: string;
 }
 
 // Інтерфейс для контексту авторизації
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (firstName: string, lastName: string | undefined, email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
+  updateUser: (updatedUser: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -33,6 +34,7 @@ const AuthContext = createContext<AuthContextType>({
   login: async () => {},
   register: async () => {},
   logout: () => {},
+  updateUser: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -50,49 +52,43 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [user]);
 
   const login = async (email: string, password: string) => {
-    // Мок-відповідь для тестування
-    if (email && password) {
-      const mockUser = {
-        id: '123',
-        firstName: 'Test',
-        lastName: 'User',
-        email: email,
-        token: 'mock-token-123',
-        phone: undefined,
-        avatar: undefined,
-        address: undefined,
-      };
-      setUser(mockUser);
-      return;
+    const response = await fetch('http://localhost:5000/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+    if (response.ok) {
+      setUser(data.user);
+    } else {
+      throw new Error(data.message || 'Помилка входу');
     }
-    throw new Error('Помилка входу: невірний email або пароль');
   };
 
-  const register = async (firstName: string, lastName: string | undefined, email: string, password: string) => {
-    // Мок-відповідь для тестування
-    if (firstName && email && password) {
-      const mockUser = {
-        id: '124',
-        firstName: firstName,
-        lastName: lastName || undefined,
-        email: email,
-        token: 'mock-token-124',
-        phone: undefined,
-        avatar: undefined,
-        address: undefined,
-      };
-      setUser(mockUser);
-      return;
+  const register = async (name: string, email: string, password: string) => {
+    const response = await fetch('http://localhost:5000/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password }),
+    });
+    const data = await response.json();
+    if (response.ok) {
+      setUser(data.user);
+    } else {
+      throw new Error(data.message || 'Помилка реєстрації');
     }
-    throw new Error('Помилка реєстрації: заповніть усі поля');
   };
 
   const logout = () => {
     setUser(null);
   };
 
+  const updateUser = (updatedUser: User) => {
+    setUser(updatedUser);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, register, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

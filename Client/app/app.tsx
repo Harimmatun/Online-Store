@@ -16,7 +16,6 @@ import { SearchProvider } from './context/SearchContext';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 
-// Інтерфейс для продукту
 interface Product {
   id: string;
   title: string;

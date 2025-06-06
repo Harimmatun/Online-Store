@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 function Profile() {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -59,7 +59,7 @@ function Profile() {
     };
 
     try {
-      const response = await fetch('/api/auth/update', {
+      const response = await fetch('http://localhost:5000/api/auth/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -74,14 +74,7 @@ function Profile() {
       }
 
       const data = await response.json();
-      setName(data.name);
-      setEmail(data.email);
-      setPhone(data.phone || '');
-      setAvatar(data.avatar || null);
-      setCity(data.address?.city || '');
-      setStreet(data.address?.street || '');
-      setHouse(data.address?.house || '');
-      setIsDefaultAddress(data.address?.isDefault || false);
+      updateUser(data.user);
     } catch (err: any) {
       setError(err.message);
     }

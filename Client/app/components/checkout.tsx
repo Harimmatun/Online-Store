@@ -2,35 +2,28 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+import type { CartItem } from '../context/CartContext';
 
 function Checkout() {
-  const { cartItems, clearCart } = useCart();
+  const { cart, checkout } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    firstName: user?.firstName || '',
-    lastName: user?.lastName || '',
+    name: user?.name || '',
     email: user?.email || '',
-    phone: '',
-    address: '',
-    city: '',
-    postalCode: '',
+    phone: user?.phone || '',
+    street: user?.address?.street || '',
+    city: user?.address?.city || '',
+    house: user?.address?.house || '',
     paymentMethod: 'card',
   });
 
-  const total = Array.isArray(cartItems) ? cartItems.reduce((sum: number, item: CartItem) => sum + item.price * item.quantity, 0) : 0;
+  const [error, setError] = useState<string | null>(null);
 
-  console.log('Checkout: cartItems:', cartItems);
-  console.log('Checkout: total:', total);
+  const total = Array.isArray(cart)
+    ? cart.reduce((sum: number, item: CartItem) => sum + item.price * item.quantity, 0)
+    : 0;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -41,59 +34,37 @@ function Checkout() {
     e.preventDefault();
 
     if (!user || !user.token) {
-      console.log('Checkout: User or token missing, redirecting to login');
+      setError('Користувач не авторизований');
       navigate('/login');
       return;
     }
 
-    if (!cartItems || cartItems.length === 0) {
-      console.log('Checkout: Cart is empty');
-      alert('Кошик порожній!');
+    if (!cart || cart.length === 0) {
+      setError('Кошик порожній!');
       return;
     }
 
-    const orderData = {
-      userId: user.id,
-      items: cartItems,
-      total: total,
-      shipping: {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-        city: formData.city,
-        postalCode: formData.postalCode,
-      },
-      paymentMethod: formData.paymentMethod,
-      createdAt: new Date().toISOString(),
-    };
-
-    console.log('Checkout: Submitting order:', orderData);
-
     try {
-      const response = await fetch('http://localhost:3001/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.token}`,
+      const updatedUser = {
+        ...user,
+        address: {
+          city: formData.city,
+          street: formData.street,
+          house: formData.house,
         },
-        body: JSON.stringify(orderData),
-      });
+      };
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to create order: ${response.status} - ${errorText}`);
-      }
+      await checkout();
 
-      const data = await response.json();
-      console.log('Checkout: Order created:', data);
-
-      clearCart();
+      setError(null);
       navigate('/profile');
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Checkout: Error creating order:', error);
-      alert('Сталася помилка при створенні замовлення. Перевірте, чи працює сервер, і спробуйте ще раз.');
+      if (error instanceof Error) {
+        setError(error.message || 'Сталася помилка при створенні замовлення. Спробуйте ще раз.');
+      } else {
+        setError('Сталася помилка при створенні замовлення. Спробуйте ще раз.');
+      }
     }
   };
 
@@ -103,35 +74,26 @@ function Checkout() {
         <h2 className="text-3xl font-bold font-[Montserrat] text-[#1e2a44] text-center mb-8">
           Оформлення замовлення
         </h2>
+        {error && (
+          <p className="text-red-500 font-[Poppins] text-sm text-center mb-4">
+            {error}
+          </p>
+        )}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <h3 className="text-xl font-semibold font-[Montserrat] text-[#1e2a44] mb-4">
               Інформація про доставку
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div>
-                <label className="block font-[Poppins] text-sm text-[#1e2a44] mb-1" htmlFor="firstName">
+                <label className="block font-[Poppins] text-sm text-[#1e2a44] mb-1" htmlFor="name">
                   Ім'я
                 </label>
                 <input
                   type="text"
-                  id="firstName"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6b6b] font-[Poppins] text-sm"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block font-[Poppins] text-sm text-[#1e2a44] mb-1" htmlFor="lastName">
-                  Прізвище
-                </label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  value={formData.lastName}
+                  id="name"
+                  name="name"
+                  value={formData.name}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6b6b] font-[Poppins] text-sm"
                   required
@@ -167,14 +129,14 @@ function Checkout() {
               />
             </div>
             <div className="mt-4">
-              <label className="block font-[Poppins] text-sm text-[#1e2a44] mb-1" htmlFor="address">
-                Адреса
+              <label className="block font-[Poppins] text-sm text-[#1e2a44] mb-1" htmlFor="street">
+                Вулиця
               </label>
               <input
                 type="text"
-                id="address"
-                name="address"
-                value={formData.address}
+                id="street"
+                name="street"
+                value={formData.street}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6b6b] font-[Poppins] text-sm"
                 required
@@ -196,14 +158,14 @@ function Checkout() {
                 />
               </div>
               <div>
-                <label className="block font-[Poppins] text-sm text-[#1e2a44] mb-1" htmlFor="postalCode">
-                  Поштовий індекс
+                <label className="block font-[Poppins] text-sm text-[#1e2a44] mb-1" htmlFor="house">
+                  Будинок
                 </label>
                 <input
                   type="text"
-                  id="postalCode"
-                  name="postalCode"
-                  value={formData.postalCode}
+                  id="house"
+                  name="house"
+                  value={formData.house}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6b6b] font-[Poppins] text-sm"
                   required

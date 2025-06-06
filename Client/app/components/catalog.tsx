@@ -2,9 +2,17 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSearch } from '../context/SearchContext';
 import { useCart } from '../context/CartContext';
+import type { CartItem } from '../context/CartContext';
+
+interface Product {
+  id: number;
+  title: string;
+  price: number;
+  category: string;
+}
 
 function Catalog() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
   const { searchQuery } = useSearch();
   const { addToCart } = useCart();
@@ -14,7 +22,7 @@ function Catalog() {
   const productsPerPage = 6;
 
   useEffect(() => {
-    fetch('/api/products')
+    fetch('http://localhost:5000/api/products')
       .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -25,20 +33,17 @@ function Catalog() {
       .catch(err => setError(err.message));
   }, []);
 
-  // Фільтрація та пошук
   const filteredProducts = products.filter(product =>
     product.title.toLowerCase().startsWith(searchQuery.toLowerCase()) &&
     (filterCategory === '' || product.category === filterCategory)
   );
 
-  // Сортування
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortOrder === 'price-asc') return a.price - b.price;
     if (sortOrder === 'price-desc') return b.price - a.price;
     return 0;
   });
 
-  // Пагінація
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
@@ -105,7 +110,15 @@ function Catalog() {
                 Детальніше
               </Link>
               <button
-                onClick={() => addToCart({ id: product.id, name: product.title, price: product.price, image: '' })}
+                onClick={() =>
+                  addToCart({
+                    id: product.id,
+                    name: product.title,
+                    price: product.price,
+                    image: '',
+                    quantity: 1,
+                  })
+                }
                 className="bg-[#10b981] text-white px-4 py-2 rounded-md font-[Poppins] text-sm hover:bg-[#059669] transition-colors"
               >
                 Додати до кошика
