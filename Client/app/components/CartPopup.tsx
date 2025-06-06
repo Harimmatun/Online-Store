@@ -1,22 +1,14 @@
-import { useCart } from '../context/CartContext';
+import { useCart, type CartItem } from '../context/CartContext'; // Додано type для CartItem
 import { useNavigate } from 'react-router-dom';
 
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
-
 function CartPopup() {
-  const { cartItems } = useCart();
+  const { cart } = useCart();
   const navigate = useNavigate();
 
-  console.log('CartPopup: cartItems:', cartItems);
+  console.log('CartPopup: cart:', cart);
 
-  const total = Array.isArray(cartItems)
-    ? cartItems.reduce((sum: number, item: CartItem) => {
+  const total = Array.isArray(cart)
+    ? cart.reduce((sum: number, item: CartItem) => {
         console.log('CartPopup: calculating total for item:', item);
         const validQuantity = isNaN(item.quantity) ? 1 : item.quantity;
         return sum + item.price * validQuantity;
@@ -32,12 +24,12 @@ function CartPopup() {
   return (
     <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg max-w-sm w-full">
       <h3 className="text-lg font-bold font-[Montserrat] text-[#1e2a44] mb-4">Кошик</h3>
-      {(!cartItems || cartItems.length === 0) ? (
+      {(!cart || cart.length === 0) ? (
         <p className="font-[Poppins] text-sm text-[#1e2a44]">Кошик порожній.</p>
       ) : (
         <>
           <ul className="space-y-2 max-h-40 overflow-y-auto">
-            {cartItems.map((item: CartItem) => (
+            {cart.map((item) => (
               <li key={item.id} className="flex justify-between items-center font-[Poppins] text-sm text-[#1e2a44]">
                 <span>{item.name} x {isNaN(item.quantity) ? 1 : item.quantity}</span>
                 <span>{item.price * (isNaN(item.quantity) ? 1 : item.quantity)} грн</span>

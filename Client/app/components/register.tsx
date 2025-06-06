@@ -15,7 +15,8 @@ function Register() {
     e.preventDefault();
     setError(null);
     try {
-      await register(firstName, lastName || undefined, email, password);
+      const fullName = lastName ? `${firstName} ${lastName}` : firstName; // Об’єднуємо firstName та lastName
+      await register(fullName, email, password);
       navigate('/');
     } catch (err: any) {
       setError(err.message);
@@ -71,7 +72,9 @@ function Register() {
             />
           </div>
           <div className="relative">
-            <label htmlFor="password" className="font-[Poppins] text-sm text-[#1e2a44] mb-1 block">
+            <label
+
+ htmlFor="password" className="font-[Poppins] text-sm text-[#1e2a44] mb-1 block">
               Пароль
             </label>
             <input

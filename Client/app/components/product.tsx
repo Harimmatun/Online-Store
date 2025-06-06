@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 interface Product {
-  id: string;
+  id: number; // Змінено з string на number
   title: string;
   price: number;
   category: string;
@@ -16,13 +16,13 @@ interface ProductPageProps {
 }
 
 function ProductPage({ products }: ProductPageProps) {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>(); // Явно вказуємо, що id із useParams є string
   const [product, setProduct] = useState<Product | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { addToCart } = useCart();
 
   useEffect(() => {
-    const foundProduct = products.find(p => p.id === id);
+    const foundProduct = products.find(p => p.id === Number(id)); // Конвертуємо id у number
     if (foundProduct) {
       setProduct(foundProduct);
     } else {
@@ -62,7 +62,15 @@ function ProductPage({ products }: ProductPageProps) {
           {product.description || 'Опис продукту буде додано пізніше'}
         </p>
         <button
-          onClick={() => addToCart({ id: product.id, name: product.title, price: product.price, image: product.image || '' })}
+          onClick={() =>
+            addToCart({
+              id: product.id,
+              name: product.title,
+              price: product.price,
+              image: product.image || '',
+              quantity: 1, // Додаємо quantity, якого бракувало
+            })
+          }
           className="bg-gradient-to-r from-[#10b981] to-[#059669] text-white px-6 py-3 rounded-md font-[Poppins] text-base font-semibold hover:scale-105 transition-all duration-300 shadow-md"
         >
           Додати до кошика

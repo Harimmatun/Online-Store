@@ -17,7 +17,7 @@ import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 
 interface Product {
-  id: string;
+  id: number; // Змінено з string на number
   title: string;
   price: number;
   category: string;
@@ -36,7 +36,14 @@ function App() {
         }
         return res.json();
       })
-      .then(data => setProducts(data))
+      .then(data => {
+        // Конвертуємо id із string у number
+        const convertedProducts = data.map((product: any) => ({
+          ...product,
+          id: Number(product.id), // Конвертація id у number
+        }));
+        setProducts(convertedProducts);
+      })
       .catch(err => console.error('Error fetching products:', err));
   }, []);
 
