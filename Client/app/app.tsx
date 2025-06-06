@@ -15,9 +15,10 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { SearchProvider } from './context/SearchContext';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext'; // Додаємо ThemeProvider
 
 interface Product {
-  id: number; // Змінено з string на number
+  id: number;
   title: string;
   price: number;
   category: string;
@@ -37,10 +38,9 @@ function App() {
         return res.json();
       })
       .then(data => {
-        // Конвертуємо id із string у number
         const convertedProducts = data.map((product: any) => ({
           ...product,
-          id: Number(product.id), // Конвертація id у number
+          id: Number(product.id),
         }));
         setProducts(convertedProducts);
       })
@@ -51,25 +51,27 @@ function App() {
     <AuthProvider>
       <SearchProvider>
         <CartProvider>
-          <Router>
-            <div>
-              <Header />
-              <Routes>
-                <Route path="/" element={<Catalog />} />
-                <Route path="/product/:id" element={<ProductPage products={products} />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/compare" element={<Compare />} />
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/profile" element={<Profile />} />
-                </Route>
-              </Routes>
-              <CartPopup />
-            </div>
-          </Router>
+          <ThemeProvider> {/* Додаємо ThemeProvider */}
+            <Router>
+              <div>
+                <Header />
+                <Routes>
+                  <Route path="/" element={<Catalog />} />
+                  <Route path="/product/:id" element={<ProductPage products={products} />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
+                  <Route path="/compare" element={<Compare />} />
+                  <Route element={<ProtectedRoute />}>
+                    <Route path="/profile" element={<Profile />} />
+                  </Route>
+                </Routes>
+                <CartPopup />
+              </div>
+            </Router>
+          </ThemeProvider>
         </CartProvider>
       </SearchProvider>
     </AuthProvider>

@@ -21,8 +21,8 @@ function Cart() {
 
   if (!cart.length) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gradient-to-b from-gray-50 to-white min-h-screen">
-        <p className="text-center font-[Poppins] text-lg text-[#1e2a44] animate-fadeIn">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-[var(--background-gradient)] min-h-screen">
+        <p className="text-center font-[Poppins] text-lg text-[var(--text-primary)] animate-fadeIn">
           Кошик порожній
         </p>
       </div>
@@ -30,23 +30,23 @@ function Cart() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gradient-to-b from-gray-50 to-white min-h-screen">
-      <h2 className="text-3xl font-bold font-[Montserrat] text-[#1e2a44] text-center mb-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-[var(--background-gradient)] min-h-screen">
+      <h2 className="text-3xl font-bold font-[Montserrat] text-[var(--text-primary)] text-center mb-8">
         Кошик
       </h2>
       <div className="space-y-4">
         {cart.map((item) => (
           <div
             key={item.id}
-            className="flex items-center justify-between bg-white p-4 rounded-xl shadow-md"
+            className="flex items-center justify-between bg-[var(--card-bg)] p-4 rounded-xl shadow-[var(--shadow)]"
           >
             <div>
-              <h3 className="text-lg font-[Poppins] text-[#1e2a44]">{item.name}</h3>
-              <p className="text-base font-[Poppins] text-[#3b82f6]">{item.price} грн x {item.quantity}</p>
+              <h3 className="text-lg font-[Poppins] text-[var(--text-primary)]">{item.name}</h3>
+              <p className="text-base font-[Poppins] text-[var(--text-secondary)]">{item.price} грн x {item.quantity}</p>
             </div>
             <button
               onClick={() => removeFromCart(item.id)}
-              className="bg-red-500 text-white px-3 py-1 rounded-md font-[Poppins] text-sm hover:bg-red-600 transition-colors"
+              className="bg-[var(--error-text)] text-[var(--card-bg)] px-3 py-1 rounded-md font-[Poppins] text-sm hover:bg-red-600 transition-colors"
             >
               Видалити
             </button>
@@ -54,19 +54,19 @@ function Cart() {
         ))}
       </div>
       <div className="mt-6 text-right">
-        <p className="text-xl font-[Poppins] text-[#1e2a44]">
+        <p className="text-xl font-[Poppins] text-[var(--text-primary)]">
           Загалом: {total} грн
         </p>
       </div>
       <button
         onClick={handleCheckoutRedirect}
         disabled={!user}
-        className="mt-4 bg-[#10b981] text-white px-6 py-3 rounded-lg font-[Poppins] text-base font-semibold hover:bg-[#059669] transition-colors disabled:opacity-50"
+        className="mt-4 bg-[var(--button-bg)] text-[var(--card-bg)] px-6 py-3 rounded-lg font-[Poppins] text-base font-semibold hover:bg-[var(--button-hover-bg)] transition-colors disabled:opacity-50"
       >
         Оформити замовлення
       </button>
       {error && (
-        <p className="text-red-500 font-[Poppins] text-sm text-center mt-2 animate-fadeIn">
+        <p className="text-[var(--error-text)] font-[Poppins] text-sm text-center mt-2 animate-fadeIn">
           {error}
         </p>
       )}

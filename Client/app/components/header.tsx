@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useSearch } from '../context/SearchContext';
 import { useAuth } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useTheme } from '../context/ThemeContext';
+import { Link } from 'react-router-dom';
+import { FiSun, FiMoon } from 'react-icons/fi';
 
 function Header() {
   const { searchQuery, setSearchQuery } = useSearch();
   const { user, logout } = useAuth();
   const { cart } = useCart();
+  const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -15,15 +18,24 @@ function Header() {
   };
 
   return (
-    <header className="bg-gradient-to-r from-[#1e2a44] to-[#3b82f6] text-white px-4 py-4 shadow-md flex flex-col md:flex-row justify-between items-center">
+    <header className="bg-[var(--card-bg)] text-[var(--text-primary)] px-4 py-4 shadow-[var(--shadow)] flex flex-col md:flex-row justify-between items-center">
       <div className="flex w-full justify-between items-center">
-        <Link to="/">
-          <h1 className="text-xl md:text-2xl font-bold font-[Montserrat] uppercase tracking-wide m-0">
-            Інтернет-магазин
-          </h1>
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link to="/">
+            <h1 className="text-xl md:text-2xl font-bold font-[Montserrat] uppercase tracking-wide m-0">
+              Інтернет-магазин
+            </h1>
+          </Link>
+          <button
+            onClick={toggleTheme}
+            className="text-[var(--text-primary)] hover:text-[var(--text-secondary)] transition-colors"
+            title={theme === 'light' ? 'Переключити на темну тему' : 'Переключити на світлу тему'}
+          >
+            {theme === 'light' ? <FiMoon size={20} /> : <FiSun size={20} />}
+          </button>
+        </div>
         <button
-          className="md:hidden text-white"
+          className="md:hidden text-[var(--text-primary)]"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           <svg
@@ -49,11 +61,11 @@ function Header() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Пошук продуктів..."
-            className="px-3 py-2 rounded-l-md border-none font-[Poppins] text-base text-black focus:outline-none focus:ring-2 focus:ring-[#3b82f6] w-full md:w-48"
+            className="px-3 py-2 rounded-l-md border-none font-[Poppins] text-base text-[var(--text-primary)] bg-[var(--card-bg)] focus:outline-none focus:ring-2 focus:ring-[var(--text-secondary)] w-full md:w-48"
           />
           <button
             type="submit"
-            className="px-4 py-2 bg-white text-[#1e2a44] rounded-r-md font-[Poppins] text-base hover:bg-gray-200 transition-colors"
+            className="px-4 py-2 bg-[var(--button-bg)] text-[var(--text-primary)] rounded-r-md font-[Poppins] text-base hover:bg-[var(--button-hover-bg)] transition-colors"
           >
             Знайти
           </button>
@@ -66,17 +78,17 @@ function Header() {
       >
         <Link
           to="/"
-          className="text-white font-[Poppins] text-base px-4 py-2 rounded-md hover:bg-white/20 transition-colors"
+          className="font-[Poppins] text-base px-4 py-2 rounded-md hover:bg-[var(--button-hover-bg)] hover:text-[var(--text-primary)] transition-colors"
         >
           Каталог
         </Link>
         <Link
           to="/cart"
-          className="text-white font-[Poppins] text-base px-4 py-2 rounded-md hover:bg-white/20 transition-colors relative"
+          className="font-[Poppins] text-base px-4 py-2 rounded-md hover:bg-[var(--button-hover-bg)] hover:text-[var(--text-primary)] transition-colors relative"
         >
           Кошик
           {cart.length > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            <span className="absolute -top-2 -right-2 bg-[var(--error-text)] text-[var(--card-bg)] text-xs rounded-full w-5 h-5 flex items-center justify-center">
               {cart.length}
             </span>
           )}
@@ -86,7 +98,7 @@ function Header() {
             <div className="flex items-center gap-2">
               <Link
                 to="/profile"
-                className="text-white font-[Poppins] text-base px-4 py-2 rounded-md hover:bg-white/20 transition-colors flex items-center gap-2"
+                className="font-[Poppins] text-base px-4 py-2 rounded-md hover:bg-[var(--button-hover-bg)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-2"
               >
                 {user.avatar ? (
                   <img
@@ -96,7 +108,7 @@ function Header() {
                   />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center">
-                    <span className="text-white">{user.name.charAt(0)}</span>
+                    <span className="text-[var(--text-primary)]">{user.name.charAt(0)}</span>
                   </div>
                 )}
                 {user.name}
@@ -104,7 +116,7 @@ function Header() {
             </div>
             <button
               onClick={logout}
-              className="bg-red-500 text-white px-4 py-2 rounded-md font-[Poppins] text-base hover:bg-red-600 transition-colors"
+              className="bg-[var(--error-text)] text-[var(--card-bg)] px-4 py-2 rounded-md font-[Poppins] text-base hover:bg-red-600 transition-colors"
             >
               Вийти
             </button>
@@ -113,13 +125,13 @@ function Header() {
           <>
             <Link
               to="/login"
-              className="bg-white text-[#1e2a44] px-4 py-2 rounded-md font-[Poppins] text-base hover:bg-gray-200 transition-colors"
+              className="bg-[var(--button-bg)] text-[var(--text-primary)] px-4 py-2 rounded-md font-[Poppins] text-base hover:bg-[var(--button-hover-bg)] transition-colors"
             >
               Увійти
             </Link>
             <Link
               to="/register"
-              className="bg-white text-[#1e2a44] px-4 py-2 rounded-md font-[Poppins] text-base hover:bg-gray-200 transition-colors"
+              className="bg-[var(--button-bg)] text-[var(--text-primary)] px-4 py-2 rounded-md font-[Poppins] text-base hover:bg-[var(--button-hover-bg)] transition-colors"
             >
               Реєстрація
             </Link>
