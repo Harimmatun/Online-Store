@@ -15,7 +15,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
-    document.documentElement.className = theme; // Застосовуємо клас до <html>
+    document.documentElement.className = theme; 
   }, [theme]);
 
   const toggleTheme = () => {

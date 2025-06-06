@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
-// Інтерфейс для адреси
+
 interface Address {
   city: string;
   street: string;
@@ -8,7 +8,7 @@ interface Address {
   isDefault: boolean;
 }
 
-// Інтерфейс для користувача
+
 export interface User {
   id?: string;
   name: string;
@@ -20,7 +20,6 @@ export interface User {
   language?: string;
 }
 
-// Інтерфейс для контексту авторизації
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;

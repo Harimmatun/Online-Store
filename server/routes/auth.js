@@ -6,7 +6,6 @@ const User = require('../models/User');
 const Order = require('../models/Order');
 const nodemailer = require('nodemailer');
 
-// Перевірка наявності змінних із .env
 const requiredEnvVars = ['EMAIL_HOST', 'EMAIL_PORT', 'EMAIL_SECURE', 'EMAIL_USER', 'EMAIL_PASS', 'JWT_SECRET'];
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
@@ -14,7 +13,6 @@ for (const envVar of requiredEnvVars) {
   }
 }
 
-// Дебаг-логування змінних із .env
 console.log('EMAIL_HOST:', process.env.EMAIL_HOST);
 console.log('EMAIL_PORT:', process.env.EMAIL_PORT);
 console.log('EMAIL_SECURE:', process.env.EMAIL_SECURE);
@@ -28,7 +26,6 @@ const EMAIL_HOST = process.env.EMAIL_HOST;
 const EMAIL_PORT = parseInt(process.env.EMAIL_PORT, 10);
 const EMAIL_SECURE = process.env.EMAIL_SECURE === 'true';
 
-// Налаштування транспортера для nodemailer
 const transporter = nodemailer.createTransport({
   host: EMAIL_HOST,
   port: EMAIL_PORT,
@@ -48,7 +45,6 @@ transporter.verify((error, success) => {
   }
 });
 
-// Реєстрація користувача
 router.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -77,7 +73,6 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Вхід користувача
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -103,7 +98,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Скидання пароля
 router.post('/reset-password', async (req, res) => {
   const { email } = req.body;
 
@@ -134,7 +128,6 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
-// Підтвердження скидання пароля
 router.post('/reset-password-confirm', async (req, res) => {
   const { token, newPassword } = req.body;
 
@@ -167,7 +160,6 @@ router.post('/reset-password-confirm', async (req, res) => {
   }
 });
 
-// Оновлення профілю
 router.put('/profile', async (req, res) => {
   const { name, phone, language, currentPassword, newPassword, avatar, address } = req.body;
   const token = req.headers.authorization?.split(' ')[1];
@@ -221,7 +213,6 @@ router.put('/profile', async (req, res) => {
   }
 });
 
-// Створення замовлення
 router.post('/order', async (req, res) => {
   const { items, total, address } = req.body;
   const token = req.headers.authorization?.split(' ')[1];

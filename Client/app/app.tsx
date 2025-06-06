@@ -8,14 +8,13 @@ import Profile from './components/profile';
 import Register from './components/register';
 import Login from './components/login';
 import ResetPassword from './components/resetPassword';
-import Compare from './components/compare';
 import ProductPage from './components/product';
 import CartPopup from './components/CartPopup';
 import ProtectedRoute from './components/ProtectedRoute';
 import { SearchProvider } from './context/SearchContext';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
-import { ThemeProvider } from './context/ThemeContext'; // Додаємо ThemeProvider
+import { ThemeProvider } from './context/ThemeContext'; 
 
 interface Product {
   id: number;
@@ -51,7 +50,7 @@ function App() {
     <AuthProvider>
       <SearchProvider>
         <CartProvider>
-          <ThemeProvider> {/* Додаємо ThemeProvider */}
+          <ThemeProvider>
             <Router>
               <div>
                 <Header />
@@ -63,7 +62,6 @@ function App() {
                   <Route path="/register" element={<Register />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
-                  <Route path="/compare" element={<Compare />} />
                   <Route element={<ProtectedRoute />}>
                     <Route path="/profile" element={<Profile />} />
                   </Route>

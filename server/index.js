@@ -4,10 +4,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const nodemailer = require('nodemailer');
 
-// Завантаження .env перед імпортом маршрутів
 dotenv.config();
 
-// Дебаг-логування змінних із .env
 console.log('Loaded environment variables:');
 console.log('PORT:', process.env.PORT);
 console.log('MONGO_URI:', process.env.MONGO_URI);
@@ -15,7 +13,6 @@ console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('EMAIL_HOST:', process.env.EMAIL_HOST);
 console.log('EMAIL_PORT:', process.env.EMAIL_PORT);
 
-// Перевірка nodemailer
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: process.env.EMAIL_PORT,
@@ -34,14 +31,12 @@ transporter.verify((error, success) => {
   }
 });
 
-// Імпорт маршрутів після завантаження .env
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orders');
 
 const app = express();
 
-// Middleware
 app.use(cors({
   origin: 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -53,26 +48,21 @@ app.use((req, res, next) => {
   next();
 });
 
-// Статична папка для завантажених файлів
 app.use('/uploads', express.static('uploads'));
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 
-// Handle root route
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the Online Store API' });
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(`Error: ${err.message}`);
   res.status(500).json({ message: 'Server error', error: err.message });
 });
 
-// MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -85,7 +75,6 @@ mongoose.connect(process.env.MONGO_URI, {
     process.exit(1);
   });
 
-// Start server only if not in test environment
 if (process.env.NODE_ENV !== 'test') {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {

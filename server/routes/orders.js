@@ -3,7 +3,6 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const Order = require('../models/Order');
 
-// Middleware для перевірки JWT
 const authMiddleware = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) {
@@ -18,7 +17,6 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-// Create order
 router.post('/', authMiddleware, async (req, res) => {
   const { user, address, phone, items, total } = req.body;
   try {
@@ -30,7 +28,6 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 });
 
-// Get user orders
 router.get('/:user', authMiddleware, async (req, res) => {
   try {
     const orders = await Order.find({ user: decodeURIComponent(req.params.user) });

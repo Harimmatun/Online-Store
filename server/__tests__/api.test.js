@@ -9,7 +9,6 @@ describe('Online Store API', () => {
   beforeAll(async () => {
     process.env.NODE_ENV = 'test';
     await mongoose.connect(process.env.MONGO_URI, {
-      // Опції не потрібні, оскільки використовується сучасний драйвер
     });
   });
 
