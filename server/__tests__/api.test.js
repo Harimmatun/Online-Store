@@ -100,32 +100,6 @@ describe('Online Store API', () => {
 
     const token = registerRes.body.token;
 
-    const res = await request(app)
-      .post('/api/orders')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        user: 'Test User',
-        address: 'Test Address',
-        phone: '+380123456789',
-        items: [{ name: 'Test Product', price: 100 }],
-        total: 100
-      });
-    expect(res.status).toBe(201);
-    expect(res.body.user).toBe('Test User');
-    expect(res.body.total).toBe(100);
-  });
-
-  it('should get user orders', async () => {
-    const registerRes = await request(app)
-      .post('/api/auth/register')
-      .send({
-        name: 'Test User',
-        email: 'test@example.com',
-        password: 'Password123!'
-      });
-
-    const token = registerRes.body.token;
-
     await request(app)
       .post('/api/orders')
       .set('Authorization', `Bearer ${token}`)

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { resetPassword, confirmResetPassword } from '../auth';
+import { useAuth } from '../context/AuthContext';
 
 function ResetPassword() {
   const [email, setEmail] = useState('');
@@ -8,6 +8,7 @@ function ResetPassword() {
   const [message, setMessage] = useState('');
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
+  const { resetPassword, confirmResetPassword } = useAuth(); 
 
   useEffect(() => {
     if (token) {
@@ -19,7 +20,7 @@ function ResetPassword() {
     e.preventDefault();
     setMessage('Надсилаємо запит...');
     try {
-      const responseMessage = await resetPassword(email);
+      const responseMessage = await resetPassword(email); 
       setMessage(responseMessage);
     } catch (error: any) {
       setMessage(error.message || 'Помилка при відправці запиту. Спробуйте ще раз.');
@@ -35,7 +36,7 @@ function ResetPassword() {
     }
     setMessage('Оновлюємо пароль...');
     try {
-      const responseMessage = await confirmResetPassword(token, newPassword);
+      const responseMessage = await confirmResetPassword(token, newPassword); 
       setMessage(responseMessage);
       setTimeout(() => {
         window.location.href = '/login';

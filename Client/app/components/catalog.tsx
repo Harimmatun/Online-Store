@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSearch } from '../context/SearchContext';
 import { useCart } from '../context/CartContext';
-import type { CartItem } from '../context/CartContext';
 
 interface Product {
   id: number;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import { useSearch } from '../context/SearchContext';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
